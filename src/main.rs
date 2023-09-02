@@ -11,7 +11,7 @@ use axum::http::{
 };
 use dotenv::dotenv;
 use route::create_router;
-use tower_http::cors::CorsLayer;
+use tower_http::cors::{CorsLayer, Any};
 
 use sqlx::{postgres::PgPoolOptions, Pool, Postgres};
 
@@ -40,7 +40,11 @@ async fn main() {
     };
 
     let cors = CorsLayer::new()
-        .allow_origin("http://localhost:3000".parse::<HeaderValue>().unwrap())
+        .allow_origin([
+            "http://localhost:3000".parse().unwrap(),
+            "https://hoppscotch.io".parse().unwrap(),
+        ])
+        // .allow_origin(Any)
         .allow_methods([Method::GET, Method::POST, Method::PATCH, Method::DELETE])
         .allow_credentials(true)
         .allow_headers([AUTHORIZATION, ACCEPT, CONTENT_TYPE]);
